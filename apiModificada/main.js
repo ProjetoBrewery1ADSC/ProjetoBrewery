@@ -19,21 +19,21 @@ const HABILITAR_OPERACAO_INSERIR = true;
 const AMBIENTE = 'desenvolvimento';
 
 const serial = async (
-    valorTempMaceracao,
-        valorTempMalteacao1,
-        valorTempMalteacao2,
-        valorTempMalteacao3,
-        valorTempMoagem,
-        valorTempBrassagem1,
-        valorTempBrassagem2,
-        valorTempBrassagem3,
-        valorTempFervura,
-        valorTempResfriamento1, 
-        valorTempResfriamento2, 
-        valorTempResfriamento3, 
-        valorTempFiltragem, 
-        valorTempPasteurizacao, 
-        valorTempTunelPast, 
+         valorTempMaceracao,
+         valorTempMalteacao1,
+         valorTempMalteacao2,
+         valorTempMalteacao3,
+         valorTempMoagem,
+         valorTempBrassagem1,
+         valorTempBrassagem2,
+         valorTempBrassagem3,
+         valorTempFervura,
+         valorTempResfriamento1, 
+         valorTempResfriamento2, 
+         valorTempResfriamento3, 
+         valorTempFiltragem, 
+         valorTempPasteurizacao, 
+         valorTempTunelPast, 
     
 ) => {
     let poolBancoDados = ''
@@ -73,51 +73,30 @@ const serial = async (
     arduino.pipe(new serialport.ReadlineParser({ delimiter: '\r\n' })).on('data', async (data) => {
         //console.log(data);
         const valores = data.split(';');
+        const lm35_temperatura = parseFloat(valores[0]);
+        const valor_temperatura_maceracao = lm35_temperatura * 0.292 + 5.01;
 
-        const  valor_temperatura_maceracao = parseFloat(valores[0]);
+        const valor_temperatura_malteacao1 = lm35_temperatura * 0.292 + 55.01;
+        const valor_temperatura_malteacao2 = lm35_temperatura * 0.489 + 58.32;
+        const valor_temperatura_malteacao3 = lm35_temperatura * 1.461 + 54.98;
 
-        const  valor_temperatura_malteacao1 = parseFloat(valores[1]);
-        const  valor_temperatura_malteacao2 = parseFloat(valores[2]);
-        const  valor_temperatura_malteacao3 = parseFloat(valores[3]);
+        const valor_temperatura_moagem = lm35_temperatura * 0.974 + 8.65;
 
-        const  valor_temperatura_moagem = parseFloat(valores[4]);
+        const valor_temperatura_brassagem1 = lm35_temperatura * 0.489 + 6.65;
+        const valor_temperatura_brassagem2 = lm35_temperatura * 1.461 + 19.98;
+        const valor_temperatura_brassagem3 = lm35_temperatura * 0.489 + 50.32;
 
-        const  valor_temperatura_brassagem1 = parseFloat(valores[5]);
-        const  valor_temperatura_brassagem2 = parseFloat(valores[6]);
-        const  valor_temperatura_brassagem3 = parseFloat(valores[7]);
+        const valor_temperatura_fervura = lm35_temperatura * 0.194 + 95.33;
 
-        const  valor_temperatura_fervura = parseFloat(valores[8]);
+        const valor_temperatura_resfriamento1 = lm35_temperatura * 0.292 + 7.99;
+        const valor_temperatura_resfriamento2 = lm35_temperatura * 0.292 + 12.99;
+        const valor_temperatura_resfriamento3 = lm35_temperatura * 0.194 + 4.99;
 
-        const  valor_temperatura_resfriamento1 = parseFloat(valores[9]);
-        const  valor_temperatura_resfriamento2 = parseFloat(valores[10]);
-        const  valor_temperatura_resfriamento3 = parseFloat(valores[11]);
+        const valor_temperatura_filtragem = lm35_temperatura * 0.194 + 4.99;
 
-        const  valor_temperatura_filtragem= parseFloat(valores[12]);
-        const  valor_temperatura_pasteurizacao_rapida = parseFloat(valores[13]);
-        const  valor_temperatura_tunel_pasteurizacao = parseFloat(valores[14]);
-
-
-        valorTempMaceracao.push(valor_temperatura_maceracao);
-
-        valorTempMalteacao1.push(valor_temperatura_malteacao1);
-        valorTempMalteacao2.push(valor_temperatura_malteacao2);
-        valorTempMalteacao3.push(valor_temperatura_malteacao3);
-
-        valorTempMoagem.push(valor_temperatura_moagem);
-
-        valorTempBrassagem1.push(valor_temperatura_brassagem1);
-        valorTempBrassagem2.push(valor_temperatura_brassagem2);
-        valorTempBrassagem3.push(valor_temperatura_brassagem3);
-
-        valorTempFervura.push(valor_temperatura_fervura);
-
-        valorTempResfriamento1.push(valor_temperatura_resfriamento1);
-        valorTempResfriamento2.push(valor_temperatura_resfriamento2);
-        valorTempResfriamento3.push(valor_temperatura_resfriamento3);
-
-        valorTempFiltragem.push(valor_temperatura_filtragem);
-        valorTempPasteurizacao.push(valor_temperatura_pasteurizacao_rapida);
-        valorTempTunelPast.push(valor_temperatura_tunel_pasteurizacao);
+        const valor_temperatura_pasteurizacao_rapida = lm35_temperatura * 0.974 + 36.65;
+        
+        const valor_temperatura_tunel_pasteurizacao = lm35_temperatura * 0.877 + 14.00;
         
 
         if (HABILITAR_OPERACAO_INSERIR) {
