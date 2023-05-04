@@ -19,7 +19,22 @@ const HABILITAR_OPERACAO_INSERIR = true;
 const AMBIENTE = 'desenvolvimento';
 
 const serial = async (
-    valoresLm35Temperatura
+    valorTempMaceracao,
+        valorTempMalteacao1,
+        valorTempMalteacao2,
+        valorTempMalteacao3,
+        valorTempMoagem,
+        valorTempBrassagem1,
+        valorTempBrassagem2,
+        valorTempBrassagem3,
+        valorTempFervura,
+        valorTempResfriamento1, 
+        valorTempResfriamento2, 
+        valorTempResfriamento3, 
+        valorTempFiltragem, 
+        valorTempPasteurizacao, 
+        valorTempTunelPast, 
+    
 ) => {
     let poolBancoDados = ''
 
@@ -29,9 +44,9 @@ const serial = async (
                 // altere!
                 // CREDENCIAIS DO BANCO LOCAL - MYSQL WORKBENCH
                 host: 'localhost',
-                user: 'USUARIO_DO_BANCO_LOCAL',
-                password: 'SENHA_DO_BANCO_LOCAL',
-                database: 'DATABASE_LOCAL'
+                user: 'evelyn',
+                password: 'sptech',
+                database: 'Brewery'
             }
         ).promise();
     } else if (AMBIENTE == 'producao') {
@@ -58,10 +73,52 @@ const serial = async (
     arduino.pipe(new serialport.ReadlineParser({ delimiter: '\r\n' })).on('data', async (data) => {
         //console.log(data);
         const valores = data.split(';');
-        const lm35Temperatura = parseFloat(valores[0]);
-       
 
-        valoresLm35Temperatura.push(lm35Temperatura);
+        const  valor_temperatura_maceracao = parseFloat(valores[0]);
+
+        const  valor_temperatura_malteacao1 = parseFloat(valores[1]);
+        const  valor_temperatura_malteacao2 = parseFloat(valores[2]);
+        const  valor_temperatura_malteacao3 = parseFloat(valores[3]);
+
+        const  valor_temperatura_moagem = parseFloat(valores[4]);
+
+        const  valor_temperatura_brassagem1 = parseFloat(valores[5]);
+        const  valor_temperatura_brassagem2 = parseFloat(valores[6]);
+        const  valor_temperatura_brassagem3 = parseFloat(valores[7]);
+
+        const  valor_temperatura_fervura = parseFloat(valores[8]);
+
+        const  valor_temperatura_resfriamento1 = parseFloat(valores[9]);
+        const  valor_temperatura_resfriamento2 = parseFloat(valores[10]);
+        const  valor_temperatura_resfriamento3 = parseFloat(valores[11]);
+
+        const  valor_temperatura_filtragem= parseFloat(valores[12]);
+        const  valor_temperatura_pasteurizacao_rapida = parseFloat(valores[13]);
+        const  valor_temperatura_tunel_pasteurizacao = parseFloat(valores[14]);
+
+
+        valorTempMaceracao.push(valor_temperatura_maceracao);
+
+        valorTempMalteacao1.push(valor_temperatura_malteacao1);
+        valorTempMalteacao2.push(valor_temperatura_malteacao2);
+        valorTempMalteacao3.push(valor_temperatura_malteacao3);
+
+        valorTempMoagem.push(valor_temperatura_moagem);
+
+        valorTempBrassagem1.push(valor_temperatura_brassagem1);
+        valorTempBrassagem2.push(valor_temperatura_brassagem2);
+        valorTempBrassagem3.push(valor_temperatura_brassagem3);
+
+        valorTempFervura.push(valor_temperatura_fervura);
+
+        valorTempResfriamento1.push(valor_temperatura_resfriamento1);
+        valorTempResfriamento2.push(valor_temperatura_resfriamento2);
+        valorTempResfriamento3.push(valor_temperatura_resfriamento3);
+
+        valorTempFiltragem.push(valor_temperatura_filtragem);
+        valorTempPasteurizacao.push(valor_temperatura_pasteurizacao_rapida);
+        valorTempTunelPast.push(valor_temperatura_tunel_pasteurizacao);
+        
 
         if (HABILITAR_OPERACAO_INSERIR) {
             if (AMBIENTE == 'producao') {
@@ -94,10 +151,21 @@ const serial = async (
                 // Este insert irá inserir dados de fk_aquario id=1 (fixo no comando do insert abaixo)
                 // >> você deve ter o aquario de id 1 cadastrado.
                 await poolBancoDados.execute(
-                    'INSERT INTO captura (lm35_temperatura) VALUES (?)',
-                    [lm35Temperatura]
+                    'INSERT INTO captura (temperatura,fkProcesso) VALUES ( (?, 1), (?, 2), (?, 3), (?, 4), (?, 5), (?, 6), (?, 7), (?, 8), (?, 9), (?, 10), (?, 11), (?, 12), (?, 13), (?, 14), (?, 15))',
+
+                    [valor_temperatura_maceracao, 
+                        valor_temperatura_malteacao1, valor_temperatura_malteacao2, valor_temperatura_malteacao3,valor_temperatura_moagem, 
+                        valor_temperatura_brassagem1,  valor_temperatura_brassagem2,  valor_temperatura_brassagem3, 
+                        valor_temperatura_fervura, 
+                        valor_temperatura_resfriamento1, valor_temperatura_resfriamento2,valor_temperatura_resfriamento3, 
+                        valor_temperatura_filtragem, valor_temperatura_pasteurizacao_rapida,valor_temperatura_tunel_pasteurizacao]
                 );
-                console.log("valores inseridos no banco: " + ", " + lm35Temperatura)
+                console.log("valores inseridos no banco: " + ", " + valor_temperatura_maceracao+ ", "+ 
+                valor_temperatura_malteacao1+ ", "+ valor_temperatura_malteacao2+ ", "+ valor_temperatura_malteacao3+ ", "+valor_temperatura_moagem+ ", "+ 
+                valor_temperatura_brassagem1+ ", "+  valor_temperatura_brassagem2+ ", "+  valor_temperatura_brassagem3+ ", "+ 
+                valor_temperatura_fervura+ ", "+ 
+                valor_temperatura_resfriamento1+ ", "+ valor_temperatura_resfriamento2+ ", "+valor_temperatura_resfriamento3+ ", "+ 
+                valor_temperatura_filtragem+ ", "+ valor_temperatura_pasteurizacao_rapida+ ", "+valor_temperatura_tunel_pasteurizacao)
 
             } else {
                 throw new Error('Ambiente não configurado. Verifique o arquivo "main.js" e tente novamente.');
@@ -112,7 +180,22 @@ const serial = async (
 
 // não altere!
 const servidor = (
-    valoresLm35Temperatura,
+    valorTempMaceracao,
+    valorTempMalteacao1,
+    valorTempMalteacao2,
+    valorTempMalteacao3,
+    valorTempMoagem,
+    valorTempBrassagem1,
+    valorTempBrassagem2,
+    valorTempBrassagem3,
+    valorTempFervura,
+    valorTempResfriamento1, 
+    valorTempResfriamento2, 
+    valorTempResfriamento3, 
+    valorTempFiltragem, 
+    valorTempPasteurizacao, 
+    valorTempTunelPast,
+
 ) => {
     const app = express();
     app.use((request, response, next) => {
@@ -124,19 +207,65 @@ const servidor = (
         console.log(`API executada com sucesso na porta ${SERVIDOR_PORTA}`);
     });
 
-    app.get('/sensores/lm35/temperatura', (_, response) => {
-        return response.json(valoresLm35Temperatura);
-    });
-
 }
 
 (async () => {
-    const valoresLm35Temperatura = [];
+       
+        const valorTempMaceracao = [];
+
+        const valorTempMalteacao1 = [];
+        const valorTempMalteacao2 = [];
+        const valorTempMalteacao3 = [];
+
+        const valorTempMoagem = [];
+
+        const valorTempBrassagem1 = [];
+        const valorTempBrassagem2 = [];
+        const valorTempBrassagem3 = [];
+
+        const valorTempFervura = [];
+
+        const valorTempResfriamento1 = []; 
+        const valorTempResfriamento2 = []; 
+        const valorTempResfriamento3 = []; 
+        
+        const valorTempFiltragem = []; 
+        const valorTempPasteurizacao = []; 
+        const valorTempTunelPast = [];
+
     await serial(
-        valoresLm35Temperatura,
+        valorTempMaceracao,
+        valorTempMalteacao1,
+        valorTempMalteacao2,
+        valorTempMalteacao3,
+        valorTempMoagem,
+        valorTempBrassagem1,
+        valorTempBrassagem2,
+        valorTempBrassagem3,
+        valorTempFervura,
+        valorTempResfriamento1, 
+        valorTempResfriamento2, 
+        valorTempResfriamento3, 
+        valorTempFiltragem, 
+        valorTempPasteurizacao, 
+        valorTempTunelPast
         
     );
     servidor(
-        valoresLm35Temperatura,
+        valorTempMaceracao,
+        valorTempMalteacao1,
+        valorTempMalteacao2,
+        valorTempMalteacao3,
+        valorTempMoagem,
+        valorTempBrassagem1,
+        valorTempBrassagem2,
+        valorTempBrassagem3,
+        valorTempFervura,
+        valorTempResfriamento1, 
+        valorTempResfriamento2, 
+        valorTempResfriamento3, 
+        valorTempFiltragem, 
+        valorTempPasteurizacao, 
+        valorTempTunelPast
     );
 })();
